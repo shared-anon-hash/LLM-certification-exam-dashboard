@@ -5,6 +5,12 @@ from io import StringIO
 
 st.title("Language Model Performance Dashboard")
 
+st.set_page_config(
+    page_title="My App",
+    page_icon=":robot:",  # Or path to an image
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 # -------------------------
 # Certification Exam Dataset
 # -------------------------
