@@ -107,14 +107,14 @@ if models_selected_exam:
     st.subheader("Exam Percentage Table with Highlighted Best per Exam")
     st.dataframe(df_exam[df_exam["Model"].isin(models_selected_exam)].style.apply(highlight_best, subset=score_cols))
     
-    st.subheader("Exam Scores Comparison")
+    st.subheader("Exam Percentage Comparison")
     fig, ax = plt.subplots(figsize=(16,6))
     for model in models_selected_exam:
         model_data = df_exam[df_exam["Model"] == model]
         ax.plot(score_cols, model_data[score_cols].iloc[0], marker='o', label=model)
     ax.set_xticklabels(score_cols, rotation=90)
-    ax.set_ylabel("Score")
-    ax.set_title("Certification Exam Scores Comparison")
+    ax.set_ylabel("Percentage")
+    ax.set_title("Certification Exam Percentage Comparison")
     ax.legend()
     st.pyplot(fig)
 
