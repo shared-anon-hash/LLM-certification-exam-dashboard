@@ -104,7 +104,7 @@ models_selected_exam = st.multiselect(
 )
 
 if models_selected_exam:
-    st.subheader("Exam Scores Table with Highlighted Best per Exam")
+    st.subheader("Exam Percentage Table with Highlighted Best per Exam")
     st.dataframe(df_exam[df_exam["Model"].isin(models_selected_exam)].style.apply(highlight_best, subset=score_cols))
     
     st.subheader("Exam Scores Comparison")
