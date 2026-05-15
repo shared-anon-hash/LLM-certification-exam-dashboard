@@ -141,6 +141,8 @@ st.header("Key Metrics Dataset")
 
 metrics_csv = """
 Model Name,K1,K2,K3,K4,Total
+gpt-5.4-2026-03-05,102.7,570.7,174.3,98.7,946.3 
+gpt-5.3-chat-latest,105.0,571.7,192.0,105.0,973.7 
 gpt-5.2,101 , 553 , 172 , 101,927 
  gpt-5.1,106 , 550 , 165 , 99,920 
  GPT-5,109.0,566.0,206.0,104.3,985.3 
@@ -178,6 +180,8 @@ gemini-2.5-flash-lite,101 , 501 , 155 , 82,839
  claude-3-haiku-20240307,82 , 423 , 130 , 72,707 
  claude-haiku-4-5-20251001,100 , 526 , 151 , 83,860 
  claude-opus-4-5-20251101,108 , 583 , 174 , 106,971 
+ deepseek-v4-pro,102 , 580 , 171 , 107,960 
+ deepseek-v4-flash,107 , 561 , 178 , 98,944 
  mistral-small3.2,93 , 481 , 126 , 80,780 
  mistral-small3.1:latest,97 , 496 , 138 , 81,812 
  ministral-3-3b,73 , 399 , 110 , 70,652 
@@ -188,6 +192,7 @@ gemini-2.5-flash-lite,101 , 501 , 155 , 82,839
  qwen2.5vl:32b,97 , 506 , 135 , 84,822 
  qwen2.5vl:3b,85 , 387 , 104 , 65,641 
  qwen2.5vl:7b,81 , 446 , 113 , 69,709 
+ gemma4,96 , 476 , 162 , 83,817 
  google-gemma-3-27b-it,95 , 508 , 139 , 87,829 
  gemma3:latest,76 , 384 , 84 , 63,607 
  gemma3:12b,92 , 472 , 125 , 69,758 
@@ -198,7 +203,7 @@ gemini-2.5-flash-lite,101 , 501 , 155 , 82,839
  bakllava:latest,54 , 274 , 55 , 38,421 
  llava-phi3:latest,71 , 382 , 93 , 60,606 
  minicpm-v:latest,69 , 379 , 80 , 64,592 
- llava-llama3:latest,69 , 296 , 90 , 58,513
+ llava-llama3:latest,69 , 296 , 90 , 58,513 
 """  # Add all remaining rows for K1-K4 totals
 
 df_metrics = pd.read_csv(StringIO(metrics_csv))
