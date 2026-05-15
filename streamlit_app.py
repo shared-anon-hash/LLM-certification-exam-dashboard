@@ -3,18 +3,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from io import StringIO
 
-st.title("Language Model Performance Dashboard")
-
+# Must be first Streamlit call
 st.set_page_config(
-    page_title="My App",
-    page_icon=":robot:",  # Or path to an image
+    page_title="LLM Certification Dashboard",
+    page_icon=":robot:",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+st.title("Language Model Performance Dashboard")
+
 # -------------------------
 # Certification Exam Dataset
 # -------------------------
 st.header("Certification Exam Results")
+
 
 exam_csv = """
 Model,CTFL - A,CTFL - B,CTFL - C,CTFL - D,CTAL-TAv4.1,CTAL-TAv3.1,CTAL-TAEv2.0,CTAL-TAEv1.3,CTAL-TMv3.0,CTAL-TMv1.4,CTAL-ATT,CTAL-TTA,CT-ATLaS,CT-AI,CTFL-AT,CT-GenAI,CT-MAT,CT-TAS,CT-MBT,CT-AcT,CT-PT,CT-SEC,CT-STE,CT-UT,CT-AuT,CT-GaMe,CT-GT,CTEL-ITP-ATP,CTEL-ITP-ITPI,CTEL-TM-OTM,Total Passed
@@ -81,45 +84,54 @@ bakllava:latest,45,30,41.2,37.5,16,23.1,26.8,53.3,38.1,35.3,33.3,32.1,27.5,34,36
 llava-phi3:latest,57.5,42.5,46.2,50,38.5,42.5,45.7,62,59.7,57.6,55,44.9,52.2,57.4,63.7,63,70,48,58.8,47.5,60,40,68.6,50,65,51.2,35,52.8,52.6,53.9,3
 minicpm-v:latest,58.8,42.5,43.8,42.5,29.5,42.5,56.5,58.7,56.2,62.4,36.7,44.9,60.9,44.7,61.3,58.7,63.7,50,56.2,62.5,55,46.2,62.8,52.5,55,48.8,40,69.4,39.5,56.7,1
 llava-llama3:latest,56.2,33.8,51.2,42.5,28.8,44.4,41.3,58,58.5,41.8,60,46.2,40.6,40.4,56.2,44.6,43.8,48,51.2,37.5,57.5,50,43,50,47.5,38.8,40,47.2,42.1,37,0"""  
+
+
 df_exam = pd.read_csv(StringIO(exam_csv))
 
-# Convert p/f to numeric
+# Convert scores to numeric (handles any residual string 'p'/'f' markers)
 def convert_score(score):
     if isinstance(score, str):
         if 'p' in score:
-            return float(score.replace('p',''))
+            return float(score.replace('p', ''))
         elif 'f' in score:
-            return float(score.replace('f',''))
+            return float(score.replace('f', ''))
     return score
 
 score_cols = df_exam.columns[1:]
-df_exam[score_cols] = df_exam[score_cols].applymap(convert_score)
 
-# Highlight best per exam
+# Fix: use .map() instead of deprecated .applymap() (pandas >= 2.1)
+df_exam[score_cols] = df_exam[score_cols].map(convert_score)
+
+# Highlight best value per column
 def highlight_best(row):
     max_val = row.max()
     return ['background-color: lightgreen' if v == max_val else '' for v in row]
 
 # Model selection
 models_selected_exam = st.multiselect(
-    "Select Model(s) to Compare (Exam Results)", 
-    df_exam["Model"].unique(), 
+    "Select Model(s) to Compare (Exam Results)",
+    df_exam["Model"].unique(),
     default=df_exam["Model"].iloc[0]
 )
 
 if models_selected_exam:
     st.subheader("Exam Percentage Table with Highlighted Best per Exam")
-    st.dataframe(df_exam[df_exam["Model"].isin(models_selected_exam)].style.apply(highlight_best, subset=score_cols))
-    
+    st.dataframe(
+        df_exam[df_exam["Model"].isin(models_selected_exam)]
+        .style.apply(highlight_best, subset=score_cols)
+    )
+
     st.subheader("Exam Percentage Comparison")
-    fig, ax = plt.subplots(figsize=(16,6))
+    fig, ax = plt.subplots(figsize=(16, 6))
     for model in models_selected_exam:
         model_data = df_exam[df_exam["Model"] == model]
         ax.plot(score_cols, model_data[score_cols].iloc[0], marker='o', label=model)
+    ax.set_xticks(range(len(score_cols)))
     ax.set_xticklabels(score_cols, rotation=90)
     ax.set_ylabel("Percentage")
     ax.set_title("Certification Exam Percentage Comparison")
     ax.legend()
+    plt.tight_layout()
     st.pyplot(fig)
 
 # -------------------------
